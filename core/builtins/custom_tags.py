@@ -158,7 +158,7 @@ def str_date(value):
 @stringfilter
 def str_date_only(value):
     if value != "None":
-        return localtime(parse(value)).strftime("%d %B %Y")
+        return localtime(parse(value)).strftime("%-d %B %Y")
 
 
 @register.filter

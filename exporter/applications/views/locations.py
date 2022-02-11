@@ -160,7 +160,7 @@ class GoodsRecipientsFormView(LoginRequiredMixin, ApplicationMixin, FormView):
 
     def get_initial(self):
         return {
-            "goods_recipients": self.application.get("goods_recipients", False),    # TODO check why the value is missing
+            "goods_recipients": self.application.get("goods_recipients", False),  # TODO check why the value is missing
         }
 
     def get_context_data(self, *args, **kwargs):

@@ -112,7 +112,8 @@ def _convert_standard_application(application, editable=False, is_summary=False)
         if _is_application_export_type_temporary(application):
             converted[strings.TEMPORARY_EXPORT_DETAILS] = _get_temporary_export_details(application)
     else:
-        converted["Product location and journey"] = _get_product_location_and_journey(application)
+        product_location = {"Product location and journey": _get_product_location_and_journey(application)}
+        converted = {**product_location, **converted}
     if has_incorporated_goods(application):
         ultimate_end_users = [convert_party(item, application, editable) for item in application["ultimate_end_users"]]
         converted[strings.ULTIMATE_END_USERS] = ultimate_end_users

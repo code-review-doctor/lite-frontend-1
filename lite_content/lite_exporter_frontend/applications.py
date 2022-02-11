@@ -875,9 +875,9 @@ class EndUseDetails:
 
 class TemporaryExportDetails:
     TEMPORARY_EXPORT_DETAILS_CAPTION = "Temporary export details"
-    PROPOSED_DATE_HINT = "For example, 12 11 2020"
+    PROPOSED_DATE_HINT = "For example, 12 11"
 
-    TEMPORARY_EXPORT_DETAILS = "Enter why the products are being exported temporarily"
+    TEMPORARY_EXPORT_DETAILS = "Explain why the products are being exported temporarily"
     PRODUCTS_UNDER_DIRECT_CONTROL = "Will the products remain under your direct control while overseas?"
     PRODUCTS_UNDER_DIRECT_CONTROL_DETAILS = (
         "Who will be in control of the products while overseas, and what is your relationship to them?"
@@ -907,3 +907,4 @@ class RouteOfGoods:
     TITLE = "Are the products being shipped from the UK on an air waybill or bill of lading?"
     NO_ANSWER_DESCRIPTION = "Provide details of the route of the products"
     SAVE_BUTTON = "Save"
+    CONTINUE = "Continue"
