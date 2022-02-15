@@ -11,26 +11,33 @@ describe('Application', () => {
     let userToken
 
     before(async () => {
-      // Create organisation
-      const organisationResponse = await helper.post('organisations/', fixtures.organisation())
-      organisationId = organisationResponse.id
-
-      // Retrieve exporter user token
-      const authResponse = await helper.post('gov-users/authenticate/', fixtures.authUser(Cypress.env('sso_user')))
+      // Retrieve user token
+      const authResponse = await helper.post(
+        'gov-users/authenticate/',
+        fixtures.authUser(Cypress.env('sso_user'))
+      )
       userToken = await authResponse.token
+
+      // Create organisation
+      const organisationResponse = await helper.post(
+        'organisations/',
+        fixtures.organisation(),
+        { 'GOV-USER-TOKEN': userToken },
+      )
+      organisationId = organisationResponse.id
 
       // Update organsation status to Active
       await helper.put(
         `organisations/${organisationId}/status/`,
-        { status: 'Active '},
-        fixtures.exporterHeader(userToken, organisationId)
+        { status: 'active'},
+        { 'GOV-USER-TOKEN': userToken },
       )
 
       // Add user to organisation
       await helper.post(
         `organisations/${organisationId}/users/`,
-        fixtures.userToOrg(),
-        fixtures.exporterHeader(userToken, organisationId)
+        fixtures.userToOrg(Cypress.env('sso_user')),
+        { 'GOV-USER-TOKEN': userToken },
       )
       
       // Create an application
@@ -39,6 +46,7 @@ describe('Application', () => {
         fixtures.applicaton,
         fixtures.exporterHeader(userToken, organisationId)
       )
+
       cy.pause()
     })
 
