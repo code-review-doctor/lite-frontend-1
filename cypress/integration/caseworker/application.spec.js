@@ -9,6 +9,7 @@ describe('Application', () => {
   context('newly created application', () => {
     let organisationId
     let userToken
+    let exportUserToken
 
     before(async () => {
       // Retrieve user token
@@ -17,6 +18,13 @@ describe('Application', () => {
         fixtures.authUser(Cypress.env('sso_user'))
       )
       userToken = await authResponse.token
+
+      // Retrieve export user token
+      const exportAuthResponse = await helper.post(
+        'users/authenticate/',
+        fixtures.exportAuthUser(Cypress.env('export_sso_user'))
+      )
+      exportUserToken = await exportAuthResponse.token
 
       // Create organisation
       const organisationResponse = await helper.post(
@@ -33,19 +41,21 @@ describe('Application', () => {
         { 'GOV-USER-TOKEN': userToken },
       )
 
-      // Add user to organisation
+      // Add user to organisation caseworker
       await helper.post(
         `organisations/${organisationId}/users/`,
         fixtures.userToOrg(Cypress.env('sso_user')),
         { 'GOV-USER-TOKEN': userToken },
       )
-      
+
       // Create an application
       const applicationResponse = await helper.post(
         'applications/',
         fixtures.applicaton,
-        fixtures.exporterHeader(userToken, organisationId)
+        fixtures.exporterHeader(exportUserToken, organisationId)
       )
+      
+      console.log('--------------applicationResponse---------------', applicationResponse)
 
       cy.pause()
     })
