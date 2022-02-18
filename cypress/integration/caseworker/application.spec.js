@@ -1,12 +1,12 @@
 import helper from '../../helpers'
 import fixtures from '../../fixtures'
 
-describe('Application', () => {
+describe('Login', () => {
   it('login', () => {
     cy.login()
   })
 
-  context('newly created application', () => {
+  describe('Application', () => {
     let organisationId
     let userToken
     let defaultQueue
@@ -18,6 +18,9 @@ describe('Application', () => {
     let submittedApplication
 
     before(async () => {
+      // Change domain
+      cy.visit('/')
+
       // Retrieve user token
       const authResponse = await helper.post(
         'gov-users/authenticate/',
@@ -181,11 +184,8 @@ describe('Application', () => {
       )
     })
 
-    it('should approve a case', () => {
-      cy.visit('/').then(() => {
-        cy.visit(`/queues/${defaultQueue}/cases/${applicationId}/`)
-      })
-
+    it('should approve a case for a newly created application', () => {
+      cy.visit(`/queues/${defaultQueue}/cases/${applicationId}/`)
       cy.get('#heading-reference-code').should('contain', submittedApplication.reference_code)
     })
   })
