@@ -9,11 +9,13 @@ describe('Application', () => {
   context('newly created application', () => {
     let organisationId
     let userToken
+    let defaultQueue
     let exportUserToken
     let applicationId
     let goodId
     let endUserId
     let siteId
+    let submittedApplication
 
     before(async () => {
       // Retrieve user token
@@ -21,14 +23,15 @@ describe('Application', () => {
         'gov-users/authenticate/',
         fixtures.authUser(Cypress.env('sso_user'))
       )
-      userToken = await authResponse.token
+      userToken = authResponse.token
+      defaultQueue = authResponse.default_queue
 
       // Retrieve export user token
       const exportAuthResponse = await helper.post(
         'users/authenticate/',
         fixtures.exportAuthUser(Cypress.env('export_sso_user'))
       )
-      exportUserToken = await exportAuthResponse.token
+      exportUserToken = exportAuthResponse.token
 
       // Create organisation
       const organisationResponse = await helper.post(
@@ -67,7 +70,7 @@ describe('Application', () => {
         fixtures.headers.exporter(exportUserToken, organisationId)
       )
       applicationId = applicationResponse.id
-      
+
       // Create goods
       const goodsResponse = await helper.post(
         'goods/',
@@ -163,21 +166,27 @@ describe('Application', () => {
       )
 
       // Submit an application
-      const submitApplicationResponse = await helper.put(
+      const submittedApplicationResponse = await helper.put(
         `applications/${applicationId}/submit/`,
         fixtures.applicaton.submit,
         fixtures.headers.exporter(exportUserToken, organisationId)
       )
+      submittedApplication = submittedApplicationResponse.application
 
-      console.log(submitApplicationResponse)
-    })
-
-    beforeEach(() => {
-      cy.visit('/')
+      // Change application status
+      await helper.put(
+        `applications/${applicationId}/status/`,
+        fixtures.applicaton.status('ogd_advice'),
+        fixtures.headers.caseworker(userToken),
+      )
     })
 
     it('should approve a case', () => {
-      cy.visit('/application/')
+      cy.visit('/').then(() => {
+        cy.visit(`/queues/${defaultQueue}/cases/${applicationId}/`)
+      })
+
+      cy.get('#heading-reference-code').should('contain', submittedApplication.reference_code)
     })
   })
 })
