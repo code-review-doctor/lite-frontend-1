@@ -196,7 +196,7 @@ urlpatterns = [
          "<uuid:pk>/goods-recipients/",
          locations.GoodsRecipientsFormView.as_view(),
          name="goods_recipients",
-     ),
+    ),
     path("<uuid:pk>/goods-locations-summary/", locations.LocationsSummaryView.as_view(), name="locations_summary"),
     path("<uuid:pk>/goods-locations/existing-sites/", locations.ExistingSites.as_view(), name="existing_sites"),
     path(
